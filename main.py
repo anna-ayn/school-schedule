@@ -58,6 +58,7 @@ def main():
 
     # imprimir los datos
     print(f"\n{Colors.OKBLUE}Colegio:{Colors.END} {t_name}")
+    print(f"{Colors.OKBLUE}Materias:{Colors.END} {subjects}")
     print(f"{Colors.OKBLUE}Aulas:{Colors.END} {classrooms}")
     print(f"{Colors.OKBLUE}Horario de inicio del colegio:{Colors.END} {start_time}")
     print(f"{Colors.OKBLUE}Horario de cierre del colegio:{Colors.END} {end_time}")
