@@ -6,6 +6,7 @@ from typing import List
 from datetime import datetime
 from modules.cnf_maker import *
 from modules.time_converter import *
+from modules.tables_out import *
 
 # Colores en la terminal
 class Colors:
@@ -57,11 +58,10 @@ def main():
 
     # imprimir los datos
     print(f"\n{Colors.OKBLUE}Colegio:{Colors.END} {t_name}")
-    print(f"{Colors.OKBLUE}Profesores:{Colors.END} {teachers}")
-    print(f"{Colors.OKBLUE}Materias:{Colors.END} {subjects}")
     print(f"{Colors.OKBLUE}Aulas:{Colors.END} {classrooms}")
     print(f"{Colors.OKBLUE}Horario de inicio del colegio:{Colors.END} {start_time}")
     print(f"{Colors.OKBLUE}Horario de cierre del colegio:{Colors.END} {end_time}")
+    imprimir_disponibilidad(disp_teachers)
 
     # cantidad de profesores
     n_teachers: int = len(teachers)
