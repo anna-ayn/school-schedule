@@ -1,0 +1,32 @@
+{
+    "colegio": "Colegio 1",
+    "profesores": [
+    {
+      "nombre": "Pedro",
+      "materias": ["Matemáticas", "Física"],
+      "disponibilidad": {
+        "lunes": ["08:00:00.000", "10:00:00.000"],
+        "martes": ["10:00:00.000", "12:00:00.000"]
+      }
+    },
+    {
+      "nombre": "Maria",
+      "materias": ["Historia", "Literatura"],
+      "disponibilidad": {
+        "martes": ["08:00:00.000", "10:00:00.000"],
+        "miercoles": ["08:00:00.000", "10:00:00.000"]
+      }
+    },
+    {
+      "nombre": "Eliza",
+      "materias": ["Inglés", "Literatura", "Castellano"],
+      "disponibilidad": {
+        "miercoles": ["13:00:00.000", "18:00:00.000"],
+        "viernes": ["08:00:00.000", "19:00:00.000"]
+      }
+    }
+  ],
+  "aulas": ["Aula 1", "Aula 2", "Aula 3"],
+  "hora_inicio": "07:00:00.000",
+  "hora_final": "19:00:00.000"
+}
