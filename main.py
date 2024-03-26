@@ -83,9 +83,9 @@ def main():
         solved = False
     
     # Verificar las horas disponibles por día de cada profesor
-    for teacher in disp_teachers:
-        if len(teacher["disponibilidad"]) < 1:
-            print(f"{Colors.FAIL}ERROR:{Colors.END} El prof. {teacher['nombre']} debe estar disponible para dar clases al menos un dia de cada semana.")
+    for t, teacher in enumerate(disp_teachers):
+        if len(teacher["disponibilidad"]) < 2:
+            print(f"{Colors.FAIL}ERROR:{Colors.END} El prof. {teacher['nombre']} debe estar disponible para dar clases al menos dos dias de cada semana.")
             solved = False
         for d in teacher["disponibilidad"].keys():
             if d != "lunes" and d != "martes" and d != "miercoles" and d != "jueves" and d != "viernes":
@@ -104,22 +104,29 @@ def main():
                 solved = False
 
             d = list(teacher["disponibilidad"].keys())
-            # verificar que haya al menos dos horas disponibles
-            diff = diff_hours(st, et)
-            if diff < 2:
-                print(f"{Colors.FAIL}ERROR:{Colors.END} El prof. {teacher['nombre']} debe estar disponible para dar clases por lo menos dos horas en los dias {d[i]}")
+            # enumerar las horas disponibles del profesor dentro del horario del colegio
+            hours_start = diff_hours(start_time, st)
+            hours_end = diff_hours(start_time, et)
+            available_hours = list(range(hours_start, hours_end))
+            available_hours = [h for h in available_hours if h >= 0 and h < n_hours]
+            disp_teachers[t]["disponibilidad"][d[i]] = available_hours
+            # verificar que tenga al menos dos horas disponibles en los dias que pueda ir al colegio
+            if len(available_hours) <= 1:
+                print(f"{Colors.FAIL}ERROR:{Colors.END} El prof. {teacher['nombre']} debe estar disponible para dar clases por lo menos dos horas en los dias {d[i]} dentro del horario del colegio.")
                 solved = False
-            htotal = htotal + (diff//2)
+            htotal = htotal + (len(available_hours)//2)
             i += 1
         # verificar que la cantidad de horas disponibles de un profesor alcance para la cantidad de materias que puede dar
         if htotal < len(teacher["materias"]):
             print(f"{Colors.FAIL}ERROR:{Colors.END} El prof. {teacher['nombre']} no tiene suficientes horas disponibles para dar todas las materias que el desea dar.")
             solved = False
 
+    cnf_file: str 
     if solved:
         print(f"\n{Colors.OKGREEN}¡Todas las condiciones se cumplen!{Colors.END}")
-    else:
-        exit(1)
+        cnf_file = todimacs(start_time, end_time, n_teachers, n_subjects, n_classrooms, n_hours, disp_teachers, file)
+        print(F"Archivo de restricciones en formato DIMACS creado {Colors.OKGREEN}exitosamente!{Colors.END}")
+
 
     return
 

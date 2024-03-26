@@ -3,149 +3,195 @@ import json
 import math
 import sys
 from datetime import datetime
+from optilog.modelling import *
 
-# enumeraremos las variables de 1 a 2*n*days*hours
-# y lo almacenaremos en una tabla de 4 dimensiones
-# cada columna corresponde al numero del participante, el tipo de juego (local o visitante), el dia y la hora
-def table_variables(n: int, days: int, hours: int) -> List[List[List[List[int]]]]:
+def A_table(p:int, subjects:int, classrooms:int, hours:int):
     variable: int = 1
-    table: List[List[List[List[int]]]] = []
-    for i in range(n):
+    table: List[List[List[List[List[str]]]]] = []
+    for i in range(p):
         table.append([])
-        for j in range(n):
+        for j in range(subjects):
             table[i].append([])
-            for k in range(days):
+            for k in range(classrooms):
+                table[i][j].append([])
+                for d in range(5):
+                    table[i][j][k].append([])
+                    for _ in range(hours):
+                        table[i][j][k][d].append('A' + str(variable))
+                        variable += 1
+    return (table,variable)
+
+def D_table(p:int, subjects:int, hours:int, variable:int):
+    table: List[List[List[List[str]]]] = []
+    for i in range(p):
+        table.append([])
+        for j in range(subjects):
+            table[i].append([])
+            for d in range(5):
                 table[i][j].append([])
                 for _ in range(hours):
-                    table[i][j][k].append(variable)
+                    table[i][j][d].append('D' + str(variable))
                     variable += 1
     return table
 
-
 # obtener el numero total de clausulas para las 4 restricciones
-def get_number_clauses(n: int, days: int, hours: int) -> int:
-    c1: int = n * (n - 1)
-    c2: int = int(n * (n - 1) * days * hours * (n - (1/(n-1))) * (n - 1) * (2 - (1 / hours)))
-    c3: int = 4 * n * (n - 1) * n * days * hours * (hours - 1)
-    c4: int = 2 * n * (n - 1) * n * (days - 1) * hours * hours
-    c5: int = n * days * hours
-    return c1 + c2 + c3 + c4 + c5
+def get_number_clauses(p:int, subjects:int, classrooms:int, hours:int) -> int:
+    return 0
 
+# restriccion 0 a CNF
+# Un profesor no esta disponible para dar clases en un dia d y hora h si no esta en su disponibilidad
+def c0(problem, D: List[List[List[List[str]]]], disp_teachers, start_time: str, end_time: str, n_teachers: int, n_subjects: int, n_hours:int) -> None:
+    for p in range(n_teachers):
+        for m in range(n_subjects):
+            for i, d in enumerate(["lunes", "martes", "miercoles", "jueves", "viernes"]):
+                for h in range(n_hours):
+                    if d not in disp_teachers[p]["disponibilidad"].keys():
+                        problem.add_constr(Not(Bool(D[p][m][i][h])))
+                    else:
+                        if h not in disp_teachers[p]["disponibilidad"][d] or h==disp_teachers[p]["disponibilidad"][d][-1]:
+                            problem.add_constr(Not(Bool(D[p][m][i][h])))
 
 # restriccion 1 a CNF
-# todos los participantes deben jugar dos veces con cada uno de los otros participantes
-# una como "visitantes" y la otra como "locales".
-def c1(filename: str, table: List[List[List[List[int]]]], n: int, days: int, hours: int) -> None:
-    file: TextIOWrapper = open(filename, "a")
-    for loc in range(n):
-        for vis in range(n):
-            if loc == vis:
+# Un profesor solo puede impartir una materia a la vez.
+def c1(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+    for m1 in range(n_subjects):
+        for m2 in range(n_subjects):
+            if m1 == m2:
                 continue
-            for d in range(days):
-                for h in range(hours):
-                    # se imprime clausula
-                    file.write(f"{table[loc][vis][d][h]} ")
-            file.write(f"0\n")
-    file.flush()
+            for p in range(n_teachers):
+                for a1 in range(n_classrooms):
+                    for a2 in range(n_classrooms):
+                        for d in range(5):
+                            for h in range(n_hours):
+                                problem.add_constr(Or(Not(Bool(A[p][m1][a1][d][h])), Not(Bool(A[p][m2][a2][d][h]))))
+    for a1 in range(n_classrooms):
+        for a2 in range(n_classrooms):
+            if a1 == a2:
+                continue
+            for p in range(n_teachers):
+                for m1 in range(n_subjects):
+                    for m2 in range(n_subjects):
+                        for d in range(5):
+                            for h in range(n_hours):
+                                problem.add_constr(Or(Not(Bool(A[p][m1][a1][d][h])), Not(Bool(A[p][m2][a2][d][h]))))
 
 
 # restriccion 2 a CNF
-# Dos juegos no pueden ocurrir al mismo tiempo
-def c2(filename: str, table: List[List[List[List[int]]]], n: int, days: int, hours: int) -> None:
-    file: TextIOWrapper = open(filename, "a")
-    for a in range(n):
-        for b in range(n):
-            if a == b:
+# En una aula sólo puede impartir una materia a la vez.
+def c2(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+    for p1 in range(n_teachers):
+        for p2 in range(n_teachers):
+            if p1 == p2:
                 continue
-                
-            for d in range(days):
-                for h1 in range(hours):
-                    J_abdh1 = table[a][b][d][h1]
-                    
-                    for x in range(n):
-                        for y in range(n):
-                            if x == y or (a == x and b == y):
-                                continue
-                            
-                            for h2 in range(hours):
-                                if h1 != h2 and h2 != h1 + 1:
-                                    continue
-                                J_xydh2: int = table[x][y][d][h2]
-                                
-                                file.write(f"{-J_abdh1} {-J_xydh2} 0\n")
-    file.flush()
+            for m1 in range(n_subjects):
+                for m2 in range(n_subjects):
+                    for a in range(n_classrooms):
+                        for d in range(5):
+                            for h in range(n_hours):
+                                problem.add_constr(Or(Not(Bool(A[p1][m1][a][d][h])), Not(Bool(A[p2][m2][a][d][h]))))
+    for m1 in range(n_subjects):
+        for m2 in range(n_subjects):
+            if m1 == m2:
+                continue
+            for p1 in range(n_teachers):
+                for p2 in range(n_teachers): 
+                    for a in range(n_classrooms):
+                        for d in range(5):
+                            for h in range(n_hours):
+                                problem.add_constr(Or(Not(Bool(A[p1][m1][a][d][h])), Not(Bool(A[p2][m2][a][d][h]))))
 
 
 # restriccion 3 a CNF
-# Un participante puede jugar a lo sumo una vez por dia
-def c3(filename: str, table: List[List[List[List[int]]]], n: int, days: int, hours: int) -> None:
-    file: TextIOWrapper = open(filename, "a")
-
-    for a in range(n):
-        for b in range(n):
-            if a == b:
-                continue
-            for c in range(n):
-                for d in range(days):
-                    for h1 in range(hours):
-                        for h2 in range(hours):
-                            if h1 == h2:
-                                continue
-
-                            J_abdh1: int = table[a][b][d][h1]
-                            
-                            file.write(f"{-J_abdh1} {-table[c][a][d][h2]} 0\n")
-                            file.write(f"{-J_abdh1} {-table[a][c][d][h2]} 0\n")
-                            file.write(f"{-J_abdh1} {-table[b][c][d][h2]} 0\n")
-                            file.write(f"{-J_abdh1} {-table[c][b][d][h2]} 0\n")
-    file.flush()
+# Un profesor debe estar disponible para impartir una materia en un horario específico.
+def c3(problem, A: List[List[List[List[List[str]]]]], D: List[List[List[List[str]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+    for p in range(n_teachers):
+        for m in range(n_subjects):
+            for a in range(n_classrooms):
+                for d in range(5):
+                    for h in range(n_hours):
+                        problem.add_constr(Or(Not(Bool(A[p][m][a][d][h])), Bool(D[p][m][d][h])))
 
 
 # restriccion 4 a CNF:
-# Un participante no puede jugar de "visitante" en dos dias consecutivos, ni de "local" dos dias seguidos
-def c4(filename: str, table: List[List[List[List[int]]]], n: int, days: int, hours: int) -> None:
-    file: TextIOWrapper = open(filename, "a")
-
-    for a in range(n):
-        for b in range(n):
-            if a == b:
-                continue
-            for c in range(n):
-                for d in range(days-1):
-                    for h1 in range(hours):
-                        for h2 in range(hours):
-                            J_abdh1: int = table[a][b][d][h1]
-                            
-                            file.write(f"{-J_abdh1} {-table[a][c][d+1][h2]} 0\n")
-                            file.write(f"{-J_abdh1} {-table[c][b][d+1][h2]} 0\n")
-    file.flush()
-
+# Cada clase dura exactamente dos horas
+def c4(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+    for p in range(n_teachers):
+        for m in range(n_subjects):
+            for a in range(n_classrooms):
+                for d in range(5):
+                    for h1 in range(n_hours):
+                        expr = Not(Bool(A[p][m][a][d][h1]))
+                        for h2 in range(n_hours):
+                            if ((h1 == h2 + 1 or h1 + 1 == h2) and (h1 != h2 + 1 or h1 + 1 != h2)):
+                                expr = expr | Bool(A[p][m][a][d][h2])
+                        problem.add_constr(expr)
 
 # restriccion 5 a CNF:
-# Un participante no puede jugar contra si mismo
-def c5(filename: str, table: List[List[List[List[int]]]], n: int, days: int, hours: int) -> None:
-    file: TextIOWrapper = open(filename, "a")
-
-    for a in range(n):
-        for d in range(days):
-            for h in range(hours):
-                
-                file.write(f"{-table[a][a][d][h]} 0\n")
-    file.flush()
-
+# Cada materia se imparte dos veces por semana en el mismo salón designado.
+def c5(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+    for p in range(n_teachers):
+        for m in range(n_subjects):
+            Or1 = []
+            for a in range(n_classrooms):
+                if a == 0:
+                    continue
+                Or2 = []
+                for d1 in range(5):
+                    if d1 == 4:
+                        continue
+                    Or3 = []
+                    for h1 in range(n_hours):
+                        expr = Bool(A[p][m][a][d1][h1])
+                        Or4 = []
+                        for d2 in range(5):
+                            if d2 <= d1:
+                                continue
+                            expr2 = Bool(A[p][m][a][d2][h1])
+                            for h2 in range(n_hours):
+                                if h1 == h2:
+                                    continue
+                                expr2 = expr2 | Bool(A[p][m][a][d2][h2])
+                            Or4.append(expr2)
+                        e1 = Or4[0]
+                        for idx, e2 in enumerate(Or4):
+                            if idx > 0:
+                                e1 = e1 | e2
+                        expr = expr & e1
+                    Or3.append(expr)
+                e3 = Or3[0]
+                for idx, e4 in enumerate(Or3):
+                    if idx > 0:
+                        e3 = e3 | e4
+                Or2.append(e3)
+            e5 = Or2[0]
+            for idx, e6 in enumerate(Or2):
+                if idx > 0:
+                    e5 = e5 | e6
+            Or1.append(e5)
+    exprf = Or1[0]
+    for idx, e7 in enumerate(Or1):
+        if idx > 0:
+            exprf = exprf & e7
+    problem.add_constr(exprf)
+    print(exprf)
 
 # traducir restricciones a formato dimacs
-def todimacs(n: int, days: int, hours: int, filename: str) -> str:
-    # restamos horas menos 1, pues el ultimo partido de un dia no puede comenzar a la hora final
+def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: int, hours: int, disp_teachers: list, filename: str) -> str:
+    # restamos horas menos 1, pues la ultima clase no puede comenzar a la hora final
     hours: int = hours - 1
 
     # numero de variables en total
-    number_of_variables: int = n * n * days * hours
-    # creamos la tabla de variables
-    table: List[List[List[List[int]]]] = table_variables(n, days, hours)
+    number_of_variables: int = 5*p*subjects*hours*(classrooms+1)
+
+    # creamos la tabla de variables para A_p,m,c,d,h
+    x = A_table(p,subjects,classrooms,hours)
+    A: List[List[List[List[List[str]]]]] = x[0]
+    var: int = x[1]
+    # creamos la tabla de variables para D_p,m,d,h 
+    D: List[List[List[List[str]]]] = D_table(p,subjects,hours, var)
 
     # calculamos el numero total de clausulas
-    number_of_clauses: int = get_number_clauses(n, days, hours)
+    number_of_clauses: int = get_number_clauses(p, subjects, classrooms, hours)
     # nombre del archivo de salida
     outputCointraints: str = filename.name.replace(".json", ".cnf")
 
@@ -153,10 +199,13 @@ def todimacs(n: int, days: int, hours: int, filename: str) -> str:
     f: TextIOWrapper = open(outputCointraints, "w")
     f.write(f"p cnf {number_of_variables} {number_of_clauses}\n")
     f.flush()
-    c1(outputCointraints, table, n, days, hours)
-    c2(outputCointraints, table, n, days, hours)
-    c3(outputCointraints, table, n, days, hours)
-    c4(outputCointraints, table, n, days, hours)
-    c5(outputCointraints, table, n, days, hours)
+
+    problem = Problem()
+    # c0(problem, D, disp_teachers, start_time, end_time, p, subjects, hours)
+    # c1(problem, A, p, subjects, classrooms, hours)
+    # c2(problem, A, p, subjects, classrooms, hours)
+    # c3(problem, A, D, p, subjects, classrooms, hours)
+    # c4(problem, A, p, subjects, classrooms, hours)
+    c5(problem, A, p, subjects, classrooms, hours)
 
     return outputCointraints
