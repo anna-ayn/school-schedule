@@ -157,28 +157,26 @@ def c5(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subject
                             if idx > 0:
                                 e1 = e1 | e2
                         expr = expr & e1
-                    Or3.append(expr)
-                e3 = Or3[0]
-                for idx, e4 in enumerate(Or3):
+                        Or3.append(expr)
+                    e3 = Or3[0]
+                    for idx, e4 in enumerate(Or3):
+                        if idx > 0:
+                            e3 = e3 | e4
+                    Or2.append(e3)
+                e5 = Or2[0]
+                for idx, e6 in enumerate(Or2):
                     if idx > 0:
-                        e3 = e3 | e4
-                Or2.append(e3)
-            e5 = Or2[0]
-            for idx, e6 in enumerate(Or2):
+                        e5 = e5 | e6
+                Or1.append(e5)
+            e7 = Or1[0]
+            for idx, e8 in enumerate(Or1):
                 if idx > 0:
-                    e5 = e5 | e6
-            Or1.append(e5)
-    exprf = Or1[0]
-    for idx, e7 in enumerate(Or1):
-        if idx > 0:
-            exprf = exprf & e7
-    problem.add_constr(exprf)
-    print(exprf)
-
+                    e7 = e7 | e8
+            problem.add_constr(e6)
+    print(problem)
+    
 # restriccion 6 a CNF:
 # Un profesor no puede impartir una misma materia más de una vez en un mismo dia.
-(p,m,a,d,h1|Ap,m,a,d,h1 : (h2 | h2h1 h2h1+1: Ap,m,a,d,h2))
-(p,m,a,d,h1|Ap,m,a,d,h1 : (h2 | h2=h1 h2=h1+1: Ap,m,a,d,h2))
 def c6(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
     for p in range(n_teachers):
         for m in range(n_subjects):
