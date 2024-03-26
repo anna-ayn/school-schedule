@@ -31,5 +31,5 @@ def imprimir_disponibilidad(disp_teachers: List[Dict[str, str]]) -> None:
                 row.append("No disponible")
         # Agregar la fila a la tabla
         table.add_row(row)
-    print("\033[1;94mProfesores:\033[0m")
+    print("\033[1;94mDisponibilidad de Profesores:\033[0m")
     print(table)

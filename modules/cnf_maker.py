@@ -175,6 +175,23 @@ def c5(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subject
     problem.add_constr(exprf)
     print(exprf)
 
+# restriccion 6 a CNF:
+# Un profesor no puede impartir una misma materia más de una vez en un mismo dia.
+(p,m,a,d,h1|Ap,m,a,d,h1 : (h2 | h2h1 h2h1+1: Ap,m,a,d,h2))
+(p,m,a,d,h1|Ap,m,a,d,h1 : (h2 | h2=h1 h2=h1+1: Ap,m,a,d,h2))
+def c6(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+    for p in range(n_teachers):
+        for m in range(n_subjects):
+            for a in range(n_classrooms):
+                for d in range(5):
+                    for h1 in range(n_hours):
+                        expr = Bool(A[p][m][a][d][h1])
+                        for h2 in range(n_hours):
+                            if h2 == h1 and h2 == h1+1:
+                                continue
+                            problem.add_constr(expr | Not(Bool(A[p][m][a][d][h2])))
+
+
 # traducir restricciones a formato dimacs
 def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: int, hours: int, disp_teachers: list, filename: str) -> str:
     # restamos horas menos 1, pues la ultima clase no puede comenzar a la hora final
@@ -207,5 +224,6 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
     # c3(problem, A, D, p, subjects, classrooms, hours)
     # c4(problem, A, p, subjects, classrooms, hours)
     c5(problem, A, p, subjects, classrooms, hours)
+    # c6(problem, A, p, subjects, classrooms, hours)
 
     return outputCointraints
