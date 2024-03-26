@@ -4,6 +4,8 @@ import math
 import sys
 from datetime import datetime
 from optilog.modelling import *
+from contextlib import redirect_stdout
+import threading
 
 def A_table(p:int, subjects:int, classrooms:int, hours:int):
     variable: int = 1
@@ -33,10 +35,6 @@ def D_table(p:int, subjects:int, hours:int, variable:int):
                     table[i][j][d].append('D' + str(variable))
                     variable += 1
     return table
-
-# obtener el numero total de clausulas para las 4 restricciones
-def get_number_clauses(p:int, subjects:int, classrooms:int, hours:int) -> int:
-    return 0
 
 # restriccion 0 a CNF
 # Un profesor no esta disponible para dar clases en un dia d y hora h si no esta en su disponibilidad
@@ -169,9 +167,6 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
     # restamos horas menos 1, pues la ultima clase no puede comenzar a la hora final
     hours: int = hours - 1
 
-    # numero de variables en total
-    number_of_variables: int = 5*p*subjects*hours*(classrooms+1)
-
     # creamos la tabla de variables para A_p,m,c,d,h
     x = A_table(p,subjects,classrooms,hours)
     A: List[List[List[List[List[str]]]]] = x[0]
@@ -179,23 +174,48 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
     # creamos la tabla de variables para D_p,m,d,h 
     D: List[List[List[List[str]]]] = D_table(p,subjects,hours, var)
 
-    # calculamos el numero total de clausulas
-    number_of_clauses: int = get_number_clauses(p, subjects, classrooms, hours)
-    # nombre del archivo de salida
+    problem = Problem()
+    # Create a list to hold the threads
+    threads = []
+
+    # repartir el trabajo de modelar las restricciones entre los hilos
+    t0 = threading.Thread(target=c0, args=(problem, D, disp_teachers, start_time, end_time, p, subjects, hours))
+    threads.append(t0)
+
+    t1 = threading.Thread(target=c1, args=(problem, A, p, subjects, classrooms, hours))
+    threads.append(t1)
+
+    t2 = threading.Thread(target=c2, args=(problem, A, p, subjects, classrooms, hours))
+    threads.append(t2)
+
+    t3 = threading.Thread(target=c3, args=(problem, A, D, p, subjects, classrooms, hours))
+    threads.append(t3)
+
+    t4 = threading.Thread(target=c4, args=(problem, A, p, subjects, classrooms, hours))
+    threads.append(t4)
+
+    t5 = threading.Thread(target=c5, args=(problem, A, p, subjects, classrooms, hours))
+    threads.append(t5)
+
+    t6 = threading.Thread(target=c6, args=(problem, A, p, subjects, classrooms, hours))
+    threads.append(t6)
+
+    # iniciar los hilos
+    for thread in threads:
+        thread.start()
+
+    # esperar a que los hilos terminen
+    for thread in threads:
+        thread.join()
+    
+    # convertir el problema a formato DIMACS CNF
+    cnf = problem.to_cnf_dimacs()
+
+    # nombre del archivo de salida DIMACS
     outputCointraints: str = filename.name.replace(".json", ".cnf")
 
-    # escribimos las clausulas en el archivo de salida
-    f: TextIOWrapper = open(outputCointraints, "w")
-    f.write(f"p cnf {number_of_variables} {number_of_clauses}\n")
-    f.flush()
 
-    problem = Problem()
-    # c0(problem, D, disp_teachers, start_time, end_time, p, subjects, hours)
-    # c1(problem, A, p, subjects, classrooms, hours)
-    # c2(problem, A, p, subjects, classrooms, hours)
-    # c3(problem, A, D, p, subjects, classrooms, hours)
-    # c4(problem, A, p, subjects, classrooms, hours)
-    c5(problem, A, p, subjects, classrooms, hours)
-    # c6(problem, A, p, subjects, classrooms, hours)
-
+    with open(outputCointraints, 'w') as f:
+        with redirect_stdout(f):
+            print(cnf)
     return outputCointraints

@@ -70,7 +70,7 @@ def main():
     n_subjects: int = len(subjects)
     # cantidad de aulas
     n_classrooms: int = len(classrooms)
-    # cantidad de horas de clases posibles por dia
+    # cantidad de horas abiertas del colegio
     n_hours: int = diff_hours(start_time, end_time)
 
     # Verificar las siguientes condiciones
