@@ -1,2 +1,6 @@
 # Python Cache
 __pycache__
+
+# Outputs
+*.cnf
+*.pdf
