@@ -148,8 +148,8 @@ def main():
 
     # Resolver el problema
     if solved and solver.solve():
-        print(solver.model())
         model = solver.model()
+        print([x for x in model if x >= 0])
         solved = any(x >= 0 for x in model) and len(model) > 0
         if solved:
             print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente!{Colors.END}")
