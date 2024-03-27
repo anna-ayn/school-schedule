@@ -6,6 +6,8 @@ from datetime import datetime
 from optilog.modelling import *
 from contextlib import redirect_stdout
 import threading
+from optilog.solvers.sat import Glucose41
+
 
 def A_table(p:int, subjects:int, classrooms:int, hours:int):
     variable: int = 1
@@ -21,33 +23,30 @@ def A_table(p:int, subjects:int, classrooms:int, hours:int):
                     for _ in range(hours):
                         table[i][j][k][d].append('A' + str(variable))
                         variable += 1
-    return (table,variable)
-
-def D_table(p:int, subjects:int, hours:int, variable:int):
-    table: List[List[List[List[str]]]] = []
-    for i in range(p):
-        table.append([])
-        for j in range(subjects):
-            table[i].append([])
-            for d in range(5):
-                table[i][j].append([])
-                for _ in range(hours):
-                    table[i][j][d].append('D' + str(variable))
-                    variable += 1
     return table
+
 
 # restriccion 0 a CNF
 # Un profesor no esta disponible para dar clases en un dia d y hora h si no esta en su disponibilidad
-def c0(problem, D: List[List[List[List[str]]]], disp_teachers, start_time: str, end_time: str, n_teachers: int, n_subjects: int, n_hours:int) -> None:
+# y tampoco puede dar una materia si no esta en su disponibilidad
+def c0(problem, A: List[List[List[List[List[str]]]]], disp_teachers, start_time: str, end_time: str, n_teachers: int, n_subjects: int, n_classrooms:int, n_hours:int) -> None:
     for p in range(n_teachers):
         for m in range(n_subjects):
-            for i, d in enumerate(["lunes", "martes", "miercoles", "jueves", "viernes"]):
-                for h in range(n_hours):
-                    if d not in disp_teachers[p]["disponibilidad"].keys():
-                        problem.add_constr(Not(Bool(D[p][m][i][h])))
-                    else:
-                        if h not in disp_teachers[p]["disponibilidad"][d] or h==disp_teachers[p]["disponibilidad"][d][-1]:
-                            problem.add_constr(Not(Bool(D[p][m][i][h])))
+            if m not in disp_teachers[p]["materias"]:
+                for a in range(n_classrooms):
+                    for d in range(5):
+                        for h in range(n_hours):
+                            problem.add_constr(Not(Bool(A[p][m][a][d][h])))
+            else:
+                for i, d in enumerate(["lunes", "martes", "miercoles", "jueves", "viernes"]):
+                    for h in range(n_hours):
+                        if d not in disp_teachers[p]["disponibilidad"].keys():
+                            for a in range(n_classrooms):
+                                problem.add_constr(Not(Bool(A[p][m][a][i][h])))
+                        else:
+                            if h not in disp_teachers[p]["disponibilidad"][d] or h==disp_teachers[p]["disponibilidad"][d][-1]:
+                                for a in range(n_classrooms):
+                                    problem.add_constr(Not(Bool(A[p][m][a][i][h])))
 
 # restriccion 1 a CNF
 # Un profesor solo puede impartir una materia a la vez.
@@ -99,20 +98,9 @@ def c2(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subject
                                 problem.add_constr(Or(Not(Bool(A[p1][m1][a][d][h])), Not(Bool(A[p2][m2][a][d][h]))))
 
 
-# restriccion 3 a CNF
-# Un profesor debe estar disponible para impartir una materia en un horario específico.
-def c3(problem, A: List[List[List[List[List[str]]]]], D: List[List[List[List[str]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
-    for p in range(n_teachers):
-        for m in range(n_subjects):
-            for a in range(n_classrooms):
-                for d in range(5):
-                    for h in range(n_hours):
-                        problem.add_constr(Or(Not(Bool(A[p][m][a][d][h])), Bool(D[p][m][d][h])))
-
-
 # restriccion 4 a CNF:
 # Cada clase dura exactamente dos horas
-def c4(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+def c3(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
     for p in range(n_teachers):
         for m in range(n_subjects):
             for a in range(n_classrooms):
@@ -126,7 +114,7 @@ def c4(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subject
 
 # restriccion 5 a CNF:
 # Cada materia se imparte dos veces por semana en el mismo salón designado.
-def c5(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+def c4(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
     for p in range(n_teachers):
         for m in range(n_subjects):
             Ors = []
@@ -149,7 +137,7 @@ def c5(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subject
 
 # restriccion 6 a CNF:
 # Un profesor no puede impartir una misma materia más de una vez en un mismo dia.
-def c6(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+def c5(problem, A: List[List[List[List[List[str]]]]], n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
     for p in range(n_teachers):
         for m in range(n_subjects):
             for a in range(n_classrooms):
@@ -168,37 +156,33 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
     hours: int = hours - 1
 
     # creamos la tabla de variables para A_p,m,c,d,h
-    x = A_table(p,subjects,classrooms,hours)
-    A: List[List[List[List[List[str]]]]] = x[0]
-    var: int = x[1]
-    # creamos la tabla de variables para D_p,m,d,h 
-    D: List[List[List[List[str]]]] = D_table(p,subjects,hours, var)
+    A: List[List[List[List[List[str]]]]] = A_table(p,subjects,classrooms,hours)
+
+    # nombre del archivo de salida DIMACS
+    outputCointraints: str = filename.name.replace(".json", ".cnf")
 
     problem = Problem()
     # Create a list to hold the threads
     threads = []
 
     # repartir el trabajo de modelar las restricciones entre los hilos
-    t0 = threading.Thread(target=c0, args=(problem, D, disp_teachers, start_time, end_time, p, subjects, hours))
+    t0 = threading.Thread(target=c0, args=(problem, A, disp_teachers, start_time, end_time, p, subjects, classrooms,hours))
     threads.append(t0)
 
     t1 = threading.Thread(target=c1, args=(problem, A, p, subjects, classrooms, hours))
     threads.append(t1)
 
-    t2 = threading.Thread(target=c2, args=(problem, A, p, subjects, classrooms, hours))
-    threads.append(t2)
+    #t2 = threading.Thread(target=c2, args=(problem, A, p, subjects, classrooms, hours))
+    #threads.append(t2)
 
-    t3 = threading.Thread(target=c3, args=(problem, A, D, p, subjects, classrooms, hours))
-    threads.append(t3)
+    #t3 = threading.Thread(target=c3, args=(problem, A, p, subjects, classrooms, hours))
+    #threads.append(t3)
 
-    t4 = threading.Thread(target=c4, args=(problem, A, p, subjects, classrooms, hours))
-    threads.append(t4)
+    #t4 = threading.Thread(target=c4, args=(problem, A, p, subjects, classrooms, hours))
+    #threads.append(t4)
 
-    t5 = threading.Thread(target=c5, args=(problem, A, p, subjects, classrooms, hours))
-    threads.append(t5)
-
-    t6 = threading.Thread(target=c6, args=(problem, A, p, subjects, classrooms, hours))
-    threads.append(t6)
+    #t5 = threading.Thread(target=c5, args=(problem, A, p, subjects, classrooms, hours))
+    #threads.append(t5)
 
     # iniciar los hilos
     for thread in threads:
@@ -210,12 +194,30 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
     
     # convertir el problema a formato DIMACS CNF
     cnf = problem.to_cnf_dimacs()
-
-    # nombre del archivo de salida DIMACS
-    outputCointraints: str = filename.name.replace(".json", ".cnf")
-
-
     with open(outputCointraints, 'w') as f:
         with redirect_stdout(f):
             print(cnf)
-    return outputCointraints
+
+    s = Glucose41()
+    s.add_clauses(cnf.clauses)
+    s.solve()
+    interpretation = cnf.decode_dimacs(s.model())
+
+    model = []
+    for e in interpretation:
+        if isinstance(e, Not):
+            continue
+        model.append(str(e))
+    
+    
+    for p in range(p):
+        for m in range(subjects):
+            for a in range(classrooms):
+                for d in range(5):
+                    for h in range(hours):
+                        if '~' + A[p][m][a][d][h] in model:
+                            continue
+                        print(f"Variable is true for teacher {p}, subject {m}, classroom {a}, day {d}, and hour {h}")
+
+
+    return (outputCointraints, cnf)

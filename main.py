@@ -84,6 +84,12 @@ def main():
     
     # Verificar las horas disponibles por día de cada profesor
     for t, teacher in enumerate(disp_teachers):
+        # enumerar las materias segun subjects
+        for i, s in enumerate(subjects):
+            for j, m in enumerate(teacher["materias"]):
+                if s == m:
+                    disp_teachers[t]["materias"][j] = i
+
         if len(teacher["disponibilidad"]) < 2:
             print(f"{Colors.FAIL}ERROR:{Colors.END} El prof. {teacher['nombre']} debe estar disponible para dar clases al menos dos dias de cada semana.")
             solved = False
@@ -121,11 +127,16 @@ def main():
             print(f"{Colors.FAIL}ERROR:{Colors.END} El prof. {teacher['nombre']} no tiene suficientes horas disponibles para dar todas las materias que el desea dar.")
             solved = False
 
+    time_start: datetime = datetime.now()
     cnf_file: str 
     if solved:
         print(f"\n{Colors.OKGREEN}¡Todas las condiciones se cumplen!{Colors.END}")
-        cnf_file = todimacs(start_time, end_time, n_teachers, n_subjects, n_classrooms, n_hours, disp_teachers, file)
+        cnf_file, cnf = todimacs(start_time, end_time, n_teachers, n_subjects, n_classrooms, n_hours, disp_teachers, file)
         print(F"Archivo de restricciones en formato DIMACS creado {Colors.OKGREEN}exitosamente!{Colors.END}")
+
+    time_end: datetime = datetime.now()
+    time_taken_1: str = str(time_end - time_start)
+    print(f"\n⌛ Tiempo que tomo en convertir las restricciones en formato DIMACS: {Colors.OKBLUE}{time_taken_1}{Colors.END}")
 
 
     return
