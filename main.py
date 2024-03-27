@@ -4,6 +4,7 @@ import sys
 import os
 from typing import List
 from datetime import datetime
+from optilog.solvers.sat import Glucose41
 from modules.cnf_maker import *
 from modules.time_converter import *
 from modules.tables_out import *
@@ -138,6 +139,25 @@ def main():
     time_taken_1: str = str(time_end - time_start)
     print(f"\n⌛ Tiempo que tomo en convertir las restricciones en formato DIMACS: {Colors.OKBLUE}{time_taken_1}{Colors.END}")
 
+    # Crear el solver
+    solver: Glucose41 = Glucose41()
+    if cnf_file is not None:
+        solver.load_cnf(cnf_file)
+
+    model: List[int] = []
+
+    # Resolver el problema
+    if solved and solver.solve():
+        print(solver.model())
+        model = solver.model()
+        solved = any(x >= 0 for x in model) and len(model) > 0
+        if solved:
+            print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente!{Colors.END}")
+    else:
+        solved = False
+
+    if not solved:
+        print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución.")
 
     return
 
