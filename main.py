@@ -159,8 +159,6 @@ def main():
     if not solved:
         print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución.")
 
-    print(model)
-
     return
 
 
