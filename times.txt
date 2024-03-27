@@ -1,0 +1,1 @@
+Archivo	 Convertir a DIMCAS	 Resolver SAT	Tiempo Total	Satisfacible

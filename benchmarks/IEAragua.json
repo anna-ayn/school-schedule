@@ -1,0 +1,73 @@
+{
+    "colegio": "Colegio 4",
+    "profesores": [
+      {
+        "nombre": "Juan",
+        "materias": ["Matemáticas", "Física"],
+        "disponibilidad": {
+          "lunes": ["08:00:00.000", "14:00:00.000"],
+          "miércoles": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "María",
+        "materias": ["Historia", "Geografía"],
+        "disponibilidad": {
+          "martes": ["10:00:00.000", "16:00:00.000"],
+          "jueves": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Ana",
+        "materias": ["Biología"],
+        "disponibilidad": {
+          "miércoles": ["10:00:00.000", "16:00:00.000"],
+          "viernes": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Carlos",
+        "materias": ["Química"],
+        "disponibilidad": {
+          "martes": ["08:00:00.000", "14:00:00.000"],
+          "jueves": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Elena",
+        "materias": ["Literatura"],
+        "disponibilidad": {
+          "lunes": ["10:00:00.000", "16:00:00.000"],
+          "miércoles": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Pedro",
+        "materias": ["Arte"],
+        "disponibilidad": {
+          "martes": ["10:00:00.000", "16:00:00.000"],
+          "jueves": ["10:00:00.000", "16:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Luisa",
+        "materias": ["Inglés"],
+        "disponibilidad": {
+          "lunes": ["08:00:00.000", "14:00:00.000"],
+          "miércoles": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Miguel",
+        "materias": ["Educación Física"],
+        "disponibilidad": {
+          "lunes": ["08:00:00.000", "14:00:00.000"],
+          "miércoles": ["08:00:00.000", "14:00:00.000"]
+        }
+      }
+    ],
+    "aulas": ["Salón 1", "Salón 2", "Salón 3", "Salón 4"],
+    "hora_inicio": "08:00:00.000",
+    "hora_final": "18:00:00.000"
+  }
+  

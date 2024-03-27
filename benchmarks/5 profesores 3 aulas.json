@@ -1,0 +1,49 @@
+{
+    "colegio": "Colegio 2",
+    "profesores": [
+      {
+        "nombre": "Ana",
+        "materias": ["Biología", "Química"],
+        "disponibilidad": {
+          "lunes": ["08:00:00.000", "14:00:00.000"],
+          "miércoles": ["10:00:00.000", "16:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Carlos",
+        "materias": ["Matemáticas", "Física"],
+        "disponibilidad": {
+          "martes": ["08:00:00.000", "14:00:00.000"],
+          "jueves": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Elena",
+        "materias": ["Historia", "Literatura"],
+        "disponibilidad": {
+          "lunes": ["10:00:00.000", "16:00:00.000"],
+          "miércoles": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Gustavo",
+        "materias": ["Inglés", "Francés"],
+        "disponibilidad": {
+          "miércoles": ["08:00:00.000", "14:00:00.000"],
+          "viernes": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "María",
+        "materias": ["Educación Física", "Arte"],
+        "disponibilidad": {
+          "martes": ["10:00:00.000", "16:00:00.000"],
+          "jueves": ["10:00:00.000", "16:00:00.000"]
+        }
+      }
+    ],
+    "aulas": ["Salón 101", "Salón 102", "Salón 103"],
+    "hora_inicio": "08:00:00.000",
+    "hora_final": "18:00:00.000"
+  }
+  

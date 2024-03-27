@@ -1,0 +1,53 @@
+{
+    "colegio": "Colegio 1",
+    "profesores": [
+      {
+        "nombre": "Angel",
+        "materias": ["Matemáticas", "Historia", "Fisica"],
+        "disponibilidad": {
+          "lunes": ["08:00:00.000", "14:00:00.000"],
+          "martes": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Miguel",
+        "materias": ["Historia", "Literatura", "Quimica", "Fisica"],
+        "disponibilidad": {
+          "martes": ["08:00:00.000", "14:00:00.000"],
+          "miercoles": ["08:00:00.000", "14:00:00.000"],
+          "jueves": ["10:00:00.000", "14:00:00.000"]
+        }
+      }, 
+      {
+        "nombre": "Jimena",
+        "materias": ["Computacion", "Matematicas"],
+        "disponibilidad": {
+          "martes": ["16:00:00.000", "18:00:00.000"],
+          "miercoles": ["14:00:00.000", "18:00:00.000"],
+          "jueves": ["08:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Manuel",
+        "materias": ["Biología", "Educación Física"],
+        "disponibilidad": {
+          "lunes": ["10:00:00.000", "18:00:00.000"],
+          "martes": ["10:00:00.000", "14:00:00.000"],
+          "miercoles": ["10:00:00.000", "14:00:00.000"]
+        }
+      },
+      {
+        "nombre": "Luisa",
+        "materias": ["Arte", "Música"],
+        "disponibilidad": {
+          "lunes": ["08:00:00.000", "12:00:00.000"],
+          "miercoles": ["08:00:00.000", "12:00:00.000"],
+          "viernes": ["08:00:00.000", "12:00:00.000"]
+        }
+      }
+    ],
+    "aulas": ["Aula 1", "Aula 2", "Aula 3", "Aula 4", "Aula 5"],
+    "hora_inicio": "08:00:00.000",
+    "hora_final": "18:00:00.000"
+  }
+  
