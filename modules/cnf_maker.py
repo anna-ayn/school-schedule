@@ -47,8 +47,8 @@ def c0(problem, A: List[List[List[List[List[str]]]]], disp_teachers, n_teachers:
                             if h not in disp_teachers[p]["disponibilidad"][d] or h==disp_teachers[p]["disponibilidad"][d][-1]:
                                 for a in range(n_classrooms):
                                     problem.add_constr(Not(Bool(A[p][m][a][i][h])))   
-
-# Cada materia se imparte dos veces por semana en el mismo salón designado.
+# restriccion 1 a CNF
+# Cada materia se imparte dos veces por semana en el mismo salón designado
 def c1(problem, A: List[List[List[List[List[str]]]]], disp_teachers, n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
     for p in range(n_teachers):
         for m in range(n_subjects):
@@ -74,7 +74,7 @@ def c1(problem, A: List[List[List[List[List[str]]]]], disp_teachers, n_teachers:
                 problem.add_constr(Or(Ors))
                                  
 
-# restriccion 1 a CNF
+# restriccion 2 a CNF
 # Dos clases no pueden ocurrir al mismo tiempo para un salon y donde cada clase dura exactamente dos horas.
 def c2(problem, A: List[List[List[List[List[str]]]]], disp_teachers, n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
     for p1 in range(n_teachers):
