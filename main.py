@@ -131,7 +131,7 @@ def main():
             solved = False
 
     time_start: datetime = datetime.now()
-    cnf_file: str 
+    cnf_file: str = None
     cnf = None
     if solved:
         print(f"\n{Colors.OKGREEN}¡Todas las condiciones se cumplen!{Colors.END}")
