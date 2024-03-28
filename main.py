@@ -8,6 +8,8 @@ from optilog.solvers.sat import Glucose41
 from modules.cnf_maker import *
 from modules.time_converter import *
 from modules.tables_out import *
+from modules.pdf_creator import create_pdf
+from optilog.modelling import *
 
 # Colores en la terminal
 class Colors:
@@ -130,6 +132,7 @@ def main():
 
     time_start: datetime = datetime.now()
     cnf_file: str 
+    cnf = None
     if solved:
         print(f"\n{Colors.OKGREEN}¡Todas las condiciones se cumplen!{Colors.END}")
         cnf_file, cnf = todimacs(start_time, end_time, n_teachers, n_subjects, n_classrooms, n_hours, disp_teachers, file)
@@ -149,7 +152,6 @@ def main():
     # Resolver el problema
     if solved and solver.solve():
         model = solver.model()
-        print([x for x in model if x >= 0])
         solved = any(x >= 0 for x in model) and len(model) > 0
         if solved:
             print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente!{Colors.END}")
@@ -158,7 +160,10 @@ def main():
 
     if not solved:
         print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución.")
-
+    else:
+        interpretation = [str(x) for x in cnf.decode_dimacs(model)]
+        pdf_name: str = file.name.replace(".json", ".pdf")
+        create_pdf(interpretation, disp_teachers, list(subjects), classrooms, n_hours, start_time, pdf_name)
     return
 
 

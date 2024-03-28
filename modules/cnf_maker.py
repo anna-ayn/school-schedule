@@ -186,15 +186,6 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
         for e in model:
             if e[0] == "~":
                 i = i + 1
-
-        for p in range(p):
-            for m in range(subjects):
-                for a in range(classrooms):
-                    for d in range(5):
-                        for h in range(hours):
-                            if "~" + A[p][m][a][d][h] in model:
-                                continue
-                            print(f"Variable is true for teacher {p}, subject {m}, classroom {a}, day {d}, and hour {h}")
     else:
         print("No model found")
     return (outputCointraints, cnf)
