@@ -1,12 +1,12 @@
 {
-    "colegio": "Colegio 4",
+    "colegio": "Colegio 5",
     "profesores": [
       {
         "nombre": "Juan",
         "materias": ["Matemáticas", "Física"],
         "disponibilidad": {
           "lunes": ["08:00:00.000", "14:00:00.000"],
-          "miércoles": ["08:00:00.000", "14:00:00.000"]
+          "miercoles": ["08:00:00.000", "14:00:00.000"]
         }
       },
       {
@@ -21,7 +21,7 @@
         "nombre": "Ana",
         "materias": ["Biología"],
         "disponibilidad": {
-          "miércoles": ["10:00:00.000", "16:00:00.000"],
+          "miercoles": ["10:00:00.000", "16:00:00.000"],
           "viernes": ["08:00:00.000", "14:00:00.000"]
         }
       },
@@ -38,7 +38,7 @@
         "materias": ["Literatura"],
         "disponibilidad": {
           "lunes": ["10:00:00.000", "16:00:00.000"],
-          "miércoles": ["08:00:00.000", "14:00:00.000"]
+          "miercoles": ["08:00:00.000", "14:00:00.000"]
         }
       },
       {
@@ -54,7 +54,7 @@
         "materias": ["Inglés"],
         "disponibilidad": {
           "lunes": ["08:00:00.000", "14:00:00.000"],
-          "miércoles": ["08:00:00.000", "14:00:00.000"]
+          "miercoles": ["08:00:00.000", "14:00:00.000"]
         }
       },
       {
@@ -62,7 +62,7 @@
         "materias": ["Educación Física"],
         "disponibilidad": {
           "lunes": ["08:00:00.000", "14:00:00.000"],
-          "miércoles": ["08:00:00.000", "14:00:00.000"]
+          "miercoles": ["08:00:00.000", "14:00:00.000"]
         }
       }
     ],
