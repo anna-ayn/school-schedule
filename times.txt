@@ -1,2 +1,2 @@
 Archivo	 Convertir a DIMCAS	 Resolver SAT	Tiempo Total	Satisfacible
-times.txt	0:00:05.736388	0:00:00.009739	0:00:06.166848	SAT
+data.json	0:00:05.169042	0:00:00.010597	0:00:05.553131	SAT

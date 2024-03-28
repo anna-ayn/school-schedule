@@ -186,7 +186,7 @@ def main():
     # Guardamos los tiempos en el archivo times.txt
     # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_resolver_problema>\t<tiempo_total>\t<Satisfactorio o No>
     with open("times.txt", "a") as file:
-        file.write(f"{file.name}\t{time_taken_1}\t{time_taken_2}\t{total_time_taken}\t{'SAT' if solved else 'UNSAT'}\n")
+        file.write(f"{sys.argv[1]}\t{time_taken_1}\t{time_taken_2}\t{total_time_taken}\t{'SAT' if solved else 'UNSAT'}\n")
 
     return
 
