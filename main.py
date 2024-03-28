@@ -164,6 +164,8 @@ def main():
         interpretation = [str(x) for x in cnf.decode_dimacs(model)]
         pdf_name: str = file.name.replace(".json", ".pdf")
         create_pdf(interpretation, disp_teachers, list(subjects), classrooms, n_hours, start_time, pdf_name)
+        print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
+        print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
     return
 
 

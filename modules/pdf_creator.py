@@ -9,8 +9,11 @@ def html_code(offered_subjects: List[dict]) -> str:
     <style>
     body {
         font-family: sans-serif;
-        font-size: 12px;
         width: 100%;
+    }
+
+    h1 {
+        font-size: 24px;
     }
 
     td,
@@ -21,6 +24,7 @@ def html_code(offered_subjects: List[dict]) -> str:
         padding: 5px;
         text-align: center;
         width: 100%;
+        font-size: 12px;
     }
 
     table {
