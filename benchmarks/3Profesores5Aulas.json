@@ -1,12 +1,12 @@
 {
-    "colegio": "Colegio 3",
+    "colegio": "Colegio 2",
     "profesores": [
       {
         "nombre": "Laura",
         "materias": ["Matemáticas", "Física"],
         "disponibilidad": {
           "lunes": ["08:00:00.000", "14:00:00.000"],
-          "miércoles": ["08:00:00.000", "14:00:00.000"]
+          "miercoles": ["08:00:00.000", "14:00:00.000"]
         }
       },
       {
@@ -21,7 +21,7 @@
         "nombre": "Sofía",
         "materias": ["Biología", "Química"],
         "disponibilidad": {
-          "miércoles": ["10:00:00.000", "16:00:00.000"],
+          "miercoles": ["10:00:00.000", "16:00:00.000"],
           "viernes": ["08:00:00.000", "14:00:00.000"]
         }
       }
