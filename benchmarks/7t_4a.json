@@ -1,0 +1,163 @@
+{
+    "colegio": "Colegio Seven",
+    "profesores": [
+        {
+            "nombre": "Profesor1",
+            "materias": [
+                "Materia3",
+                "Materia4",
+                "Materia5"
+            ],
+            "disponibilidad": {
+                "lunes": [
+                    "7:00:00.000",
+                    "16:00:00.000"
+                ],
+                "martes": [
+                    "8:00:00.000",
+                    "19:00:00.000"
+                ],
+                "miercoles": [
+                    "11:00:00.000",
+                    "17:00:00.000"
+                ],
+                "jueves": [
+                    "8:00:00.000",
+                    "15:00:00.000"
+                ],
+                "viernes": [
+                    "10:00:00.000",
+                    "20:00:00.000"
+                ]
+            }
+        },
+        {
+            "nombre": "Profesor2",
+            "materias": [
+                "Materia4",
+                "Materia5",
+                "Materia6"
+            ],
+            "disponibilidad": {
+                "lunes": [
+                    "12:00:00.000",
+                    "16:00:00.000"
+                ],
+                "viernes": [
+                    "9:00:00.000",
+                    "15:00:00.000"
+                ]
+            }
+        },
+        {
+            "nombre": "Profesor3",
+            "materias": [
+                "Materia19",
+                "Materia20",
+                "Materia21"
+            ],
+            "disponibilidad": {
+                "martes": [
+                    "9:00:00.000",
+                    "16:00:00.000"
+                ],
+                "miercoles": [
+                    "9:00:00.000",
+                    "16:00:00.000"
+                ]
+            }
+        },
+        {
+            "nombre": "Profesor4",
+            "materias": [
+                "Materia14",
+                "Materia15",
+                "Materia16"
+            ],
+            "disponibilidad": {
+                "lunes": [
+                    "7:00:00.000",
+                    "18:00:00.000"
+                ],
+                "martes": [
+                    "7:00:00.000",
+                    "18:00:00.000"
+                ],
+                "viernes": [
+                    "8:00:00.000",
+                    "10:00:00.000"
+                ]
+            }
+        },
+        {
+            "nombre": "Profesor5",
+            "materias": [
+                "Materia21",
+                "Materia22",
+                "Materia23"
+            ],
+            "disponibilidad": {
+                "lunes": [
+                    "8:00:00.000",
+                    "19:00:00.000"
+                ],
+                "martes": [
+                    "8:00:00.000",
+                    "19:00:00.000"
+                ],
+                "miercoles": [
+                    "11:00:00.000",
+                    "16:00:00.000"
+                ]
+            }
+        },
+        {
+            "nombre": "Profesor6",
+            "materias": [
+                "Materia12",
+                "Materia13",
+                "Materia14"
+            ],
+            "disponibilidad": {
+                "lunes": [
+                    "7:00:00.000",
+                    "16:00:00.000"
+                ],
+                "martes": [
+                    "10:00:00.000",
+                    "17:00:00.000"
+                ],
+                "viernes": [
+                    "11:00:00.000",
+                    "17:00:00.000"
+                ]
+            }
+        },
+        {
+            "nombre": "Profesor7",
+            "materias": [
+                "Materia21",
+                "Materia22",
+                "Materia23"
+            ],
+            "disponibilidad": {
+                "miercoles": [
+                    "8:00:00.000",
+                    "18:00:00.000"
+                ],
+                "viernes": [
+                    "9:00:00.000",
+                    "15:00:00.000"
+                ]
+            }
+        }
+    ],
+    "aulas": [
+        "Aula1",
+        "Aula2",
+        "Aula3",
+        "Aula4"
+    ],
+    "hora_inicio": "07:00:00.000",
+    "hora_final": "20:00:00.000"
+}
