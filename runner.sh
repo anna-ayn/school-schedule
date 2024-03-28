@@ -68,11 +68,13 @@ done < requirements.txt
 echo -e "\n"
 
 # Ejecutar la conversión de JSON a PDF y la resolución de SAT
-echo -e "\033[93;1mConvirtiendo JSON a ICS...\033[0m"
+echo -e "\033[93;1mConvirtiendo JSON a PDF...\033[0m"
 # Si solo es un archivo, no se imprime el nombre del archivo
 if [ $# -eq 1 ]; then
     printf "\033[93;1mConvirtiendo:\033[0m $FILES\n"
     python3 main.py $FILES
+# Este caso se usa para hacer pruebas con varios archivos, se imprime el nombre del archivo
+# y una barra de progreso. Es recomendable usarlo con un solo archivo.
 else
     N_FILES=$#
     N=0
@@ -82,8 +84,6 @@ else
         printf "\033[92;1m>\033[0m"
         printf "] %d%%\r" $((N*100/N_FILES))
         python3 main.py $FILE
-        # Eliminamos el archivo .cnf
-	    rm -f $(echo $FILE | sed 's/.json/.cnf/')
         N=$((N+1))
     done
     printf "["

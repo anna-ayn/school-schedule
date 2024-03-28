@@ -141,6 +141,7 @@ def main():
     time_end: datetime = datetime.now()
     time_taken_1: str = str(time_end - time_start)
     print(f"\n⌛ Tiempo que tomo en convertir las restricciones en formato DIMACS: {Colors.OKBLUE}{time_taken_1}{Colors.END}")
+    time_start = datetime.now()
 
     # Crear el solver
     solver: Glucose41 = Glucose41()
@@ -157,15 +158,36 @@ def main():
             print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente!{Colors.END}")
     else:
         solved = False
+    time_end = datetime.now()
+    time_taken_2: str = str(time_end - time_start)
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Glucose: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
 
     if not solved:
         print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución.")
     else:
         interpretation = [str(x) for x in cnf.decode_dimacs(model)]
-        pdf_name: str = file.name.replace(".json", ".pdf")
+        school: str = t_name.replace(" ", "_").lower()
+        pdf_name: str = f"oferta_{school}.pdf"
+        # Si existe un archivo PDF con el mismo nombre, se elimina
+        if os.path.exists(pdf_name):
+            os.remove(pdf_name)
         create_pdf(interpretation, disp_teachers, list(subjects), classrooms, n_hours, start_time, pdf_name)
         print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
         print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
+    if cnf_file is not None:
+        # Eliminar el archivo de restricciones en formato DIMACS
+        os.remove(cnf_file)
+
+    total_time_end: datetime = datetime.now()
+    total_time_taken: str = str(total_time_end - total_time_start)
+    print(f"\n⏳ Tiempo total que tomo el programa: {Colors.OKBLUE}{total_time_taken}{Colors.END}")
+    print(f"\n👋 {Colors.HEADER}¡Gracias por usar el Planificador de Horarios de Asignaturas!{Colors.END}\n")
+
+    # Guardamos los tiempos en el archivo times.txt
+    # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_resolver_problema>\t<tiempo_total>\t<Satisfactorio o No>
+    with open("times.txt", "a") as file:
+        file.write(f"{file.name}\t{time_taken_1}\t{time_taken_2}\t{total_time_taken}\t{'SAT' if solved else 'UNSAT'}\n")
+
     return
 
 

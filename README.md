@@ -1,16 +1,10 @@
 # School Schedule
 
-Este proyecto tiene como objetivo resolver el problema de asignar materias a profesores de una escuela. Para ello, se utiliza el lenguaje de programación Python, en donde usando la librería `sage` se puede resolver el problema de asignación de materias a profesores de manera óptima.
+Este proyecto tiene como objetivo resolver el problema de asignar materias a profesores de una escuela. Para ello, se utiliza el lenguaje de programación Python, en donde usando la librería `optilog` se puede resolver el problema de asignación de materias a profesores de manera óptima.
 
 ## Uso
 
-Primeramente, es necesario instalar el paquete `sage` en su versión 9.5. Para ello, se puede seguir el siguiente [enlace](https://doc.sagemath.org/html/en/installation/). O usar el siguiente comando si usa alguna distribución de Linux o WSL basada en Debian:
-
-```bash
-sudo apt install sagemath
-```
-
-Posteriormente, es necesario tener las librerias de python necesarias. Para ello, se puede usar el siguiente comando:
+Primeramente, es necesario instalar las dependencias del proyecto. Para ello, se puede ejecutar el siguiente comando:
 
 ```bash
 pip install -r requirements.txt # o pip3 si es necesario
@@ -51,7 +45,6 @@ Donde `<archivo_de_entrada>` es el archivo que contiene la información de las m
   "hora_final": "19:00:00.000"
 }
 ```
-<!-- TODO: Confirmar si es .pdf o .txt -->
 Finalmente, el programa generará un archivo de salida con la información de las materias asignadas a los profesores. Este archivo se llamará `oferta_<colegio>.pdf`
 
 > [!NOTE]
