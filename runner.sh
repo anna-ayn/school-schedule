@@ -42,8 +42,31 @@ done
 FILE_TIME="times.txt"
 # Verificamos si el archivo de tiempos no existe, si no existe, lo creamos.
 if [ ! -f $FILE_TIME ]; then
-    echo -e "Archivo\t Convertir a DIMCAS\t Resolver SAT\tTiempo Total\tSatisfacible" > $FILE_TIME
+    echo -e "Archivo\t Convertir a DIMCAS\t Resolver Glucose\tResolver Kissat\tTiempo Total" > $FILE_TIME
 fi
+
+echo -e "\033[93;1mCompilando Kissat...\033[0m"
+# Verificamos si existe la carpeta kissat, si no existe, descomprimimos kissat.tar.gz en una carpeta kissat.
+if [ ! -d "kissat-rel-3.1.1" ]; then
+    tar -xzf kissat.tar.gz
+    # Corremos el script de kissat para compilarlo. (Se llama configure)
+    cd kissat-rel-3.1.1
+    ./configure > /dev/null 2>&1
+    # Luego hacemos make para compilar el resto de kissat.
+    make > /dev/null 2>&1
+    cd ..
+fi
+
+# Verificamos si existe la carpeta kissat-rel-3.1.1/build, si no existe, compilamos kissat.
+if [ ! -d "kissat-rel-3.1.1/build" ]; then
+    # Corremos el script de kissat para compilarlo. (Se llama configure)
+    cd kissat-rel-3.1.1
+    ./configure > /dev/null 2>&1
+    # Luego hacemos make para compilar el resto de kissat.
+    make > /dev/null 2>&1
+    cd ..
+fi
+echo -e "\033[93;1mKissat compilado.\033[0m"
 
 # Verificamos si las librerias de requirements.txt estan instaladas
 printf "\033[93;1mVerificando librerías...\033[0m\n"

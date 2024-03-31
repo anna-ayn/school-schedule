@@ -150,12 +150,14 @@ def main():
 
     model: List[int] = []
 
-    # Resolver el problema
+    # Resolver el problema con Glucose
+    glucose_sat: bool = False
     if solved and solver.solve():
         model = solver.model()
         solved = any(x >= 0 for x in model) and len(model) > 0
         if solved:
             print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente!{Colors.END}")
+            glucose_sat = True
     else:
         solved = False
     time_end = datetime.now()
@@ -175,7 +177,7 @@ def main():
         print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
         print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
 
-    kissat_path: str = "./kissat/build/kissat"
+    kissat_path: str = "./kissat-rel-3.1.1/build/kissat"
     kissat_time_start: datetime = datetime.now()
     kissat_sat: bool = False
     if solved and os.path.exists(kissat_path):
@@ -205,9 +207,9 @@ def main():
     print(f"\n👋 {Colors.HEADER}¡Gracias por usar el Planificador de Horarios de Asignaturas!{Colors.END}\n")
 
     # Guardamos los tiempos en el archivo times.txt
-    # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_resolver_problema>\t<tiempo_total>\t<Satisfactorio o No>
+    # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_glucose>\t<tiempo_kissat>\t<tiempo_total>
     with open("times.txt", "a") as file:
-        file.write(f"{sys.argv[1]}\t{time_taken_1}\t{time_taken_2}\t{total_time_taken}\t{'SAT' if solved else 'UNSAT'}\n")
+        file.write(f"{sys.argv[1]}\t{time_taken_1}\t{time_taken_2} {'SAT' if glucose_sat else 'UNSAT'}\t{kissat_time_taken} {'SAT' if kissat_sat else 'UNSAT'}\t{total_time_taken}\n")
 
     return
 

@@ -4,3 +4,7 @@ __pycache__
 # Outputs
 *.cnf
 *.pdf
+
+# SAT Solvers
+kissat-rel-3.1.1
+kissat-rel-3.1.1/*

@@ -1,3 +1,0 @@
-Archivo	 Convertir a DIMCAS	 Resolver SAT	Tiempo Total	Satisfacible
-data.json	0:00:05.169042	0:00:00.010597	0:00:05.553131	SAT
-benchmarks/3 profesores 5 aulas.json	0:00:00.000008	0:00:00.000142	0:00:00.017882	UNSAT
