@@ -213,9 +213,9 @@ def main():
         print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
         print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
 
-    # if cnf_file is not None:
-    #     # Eliminar el archivo de restricciones en formato DIMACS
-    #     os.remove(cnf_file)
+    if cnf_file is not None:
+        # Eliminar el archivo de restricciones en formato DIMACS
+        os.remove(cnf_file)
 
     total_time_end: datetime = datetime.now()
     total_time_taken: str = str(total_time_end - total_time_start)
