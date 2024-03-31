@@ -1,6 +1,6 @@
 # School Schedule
 
-Este proyecto tiene como objetivo resolver el problema de asignar materias a profesores de una escuela. Para ello, se utiliza el lenguaje de programación Python, en donde usando la librería `optilog` se puede resolver el problema de asignación de materias a profesores de manera óptima.
+Este proyecto tiene como objetivo resolver el problema de asignar materias a profesores de una escuela. Para ello, se utiliza el lenguaje de programación Python, en donde usando la librería `optilog` se puede resolver el problema de asignación de materias a profesores de manera óptima. Ademas, con el fin de evaluar la eficiencia de la solución, se utiliza el solver `Rsat` y `Kissat` para resolver el problema de satisfacción de restricciones.
 
 ## Uso
 
@@ -8,6 +8,13 @@ Primeramente, es necesario instalar las dependencias del proyecto. Para ello, se
 
 ```bash
 pip install -r requirements.txt # o pip3 si es necesario
+```
+
+Posteriormente, es necesario compilar los solvers de `Rsat` y `Kissat`. Para ello, se deben ejecutar los siguientes comandos:
+
+```bash
+tar -xzf rsat.tar.gz # Opcional
+tar -xzf kissat.tar.gz && cd kissat-rel-3.1.1 && ./configure && make && cd ..
 ```
 
 Finalmente, se puede ejecutar el programa con el siguiente comando:
@@ -48,4 +55,4 @@ Donde `<archivo_de_entrada>` es el archivo que contiene la información de las m
 Finalmente, el programa generará un archivo de salida con la información de las materias asignadas a los profesores. Este archivo se llamará `oferta_<colegio>.pdf`
 
 > [!NOTE]
-> Es opcional instalar las librerias de Python, el script `runner.sh` se encarga de instalarlas si no están instaladas.
+> Es opcional instalar las librerias de Python o compilar los solvers, el script `runner.sh` se encarga de instalarlas, descomprimir y compilar lo necesario para le ejecución del programa.
