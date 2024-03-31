@@ -156,26 +156,13 @@ def main():
         model = solver.model()
         solved = any(x >= 0 for x in model) and len(model) > 0
         if solved:
-            print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente!{Colors.END}")
+            print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente con Glucose!{Colors.END}")
             glucose_sat = True
     else:
         solved = False
     time_end = datetime.now()
     time_taken_2: str = str(time_end - time_start)
     print(f"\n⌛ Tiempo que tomo en resolver el problema con Glucose: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
-
-    if not solved:
-        print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución.")
-    else:
-        interpretation = [str(x) for x in cnf.decode_dimacs(model)]
-        school: str = t_name.replace(" ", "_").lower()
-        pdf_name: str = f"oferta_{school}.pdf"
-        # Si existe un archivo PDF con el mismo nombre, se elimina
-        if os.path.exists(pdf_name):
-            os.remove(pdf_name)
-        create_pdf(interpretation, disp_teachers, list(subjects), classrooms, n_hours, start_time, pdf_name)
-        print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
-        print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
 
     kissat_path: str = "./kissat-rel-3.1.1/build/kissat"
     kissat_time_start: datetime = datetime.now()
@@ -192,10 +179,20 @@ def main():
         print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar el ejecutable de Kissat en la ruta {kissat_path}.")
     kissat_time_end: datetime = datetime.now()
     kissat_time_taken: str = str(kissat_time_end - kissat_time_start)
-    print(f"\n⌛ Tiempo que tomo en resolver el problema con Kissat: {Colors.OKBLUE}{kissat_time_taken}{Colors.END}")
-        
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Kissat: {Colors.OKBLUE}{kissat_time_taken}{Colors.END}\n")
 
-
+    if not solved:
+        print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución.")
+    else:
+        interpretation = [str(x) for x in cnf.decode_dimacs(model)]
+        school: str = t_name.replace(" ", "_").lower()
+        pdf_name: str = f"oferta_{school}.pdf"
+        # Si existe un archivo PDF con el mismo nombre, se elimina
+        if os.path.exists(pdf_name):
+            os.remove(pdf_name)
+        create_pdf(interpretation, disp_teachers, list(subjects), classrooms, n_hours, start_time, pdf_name)
+        print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
+        print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
 
     if cnf_file is not None:
         # Eliminar el archivo de restricciones en formato DIMACS
