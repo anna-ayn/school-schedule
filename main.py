@@ -167,6 +167,7 @@ def main():
     # Resolver el problema con Cadical 1.0.3
     cadical_sat: bool = False
     solver2: Cadical = Cadical()
+    cadical_time_start: datetime = datetime.now()
     if solved and solver2.solve():
         model2 = solver2.model()
         solved2 = any(x >= 0 for x in model2) and len(model2) > 0
@@ -175,13 +176,14 @@ def main():
             cadical_sat = True
     else:
         solved2 = False
-    time_end = datetime.now()
-    time_taken_2: str = str(time_end - time_start)
-    print(f"\n⌛ Tiempo que tomo en resolver el problema con Cadical 1.0.3: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
+    cadical_time_end: datetime = datetime.now()
+    cadical_time = str(cadical_time_end - cadical_time_start)
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Cadical 1.0.3: {Colors.OKBLUE}{cadical_time}{Colors.END}")
 
     # Resolver el problema con Lingeling 2018
     lingeling_sat: bool = False 
     solver3: Lingeling18 = Lingeling18()
+    lingeling_time_start: datetime = datetime.now()
     if solved and solver3.solve():
         model3 = solver3.model()
         solved3 = any(x >= 0 for x in model3) and len(model3) > 0
@@ -190,9 +192,9 @@ def main():
             cadical_sat = True
     else:
         solved3 = False
-    time_end = datetime.now()
-    time_taken_2: str = str(time_end - time_start)
-    print(f"\n⌛ Tiempo que tomo en resolver el problema con Lingeling 2018: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
+    lingeling_time_end: datetime = datetime.now()
+    lingeling_time = str(lingeling_time_end - lingeling_time_start)
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Lingeling 2018: {Colors.OKBLUE}{lingeling_time}{Colors.END}")
 
     
 
@@ -255,9 +257,9 @@ def main():
     print(f"\n👋 {Colors.HEADER}¡Gracias por usar el Planificador de Horarios de Asignaturas!{Colors.END}\n")
 
     # Guardamos los tiempos en el archivo times.txt
-    # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_glucose>\t<tiempo_kissat>\t<tiempo_rsat>\t<tiempo_total>
+    # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_glucose>\t<tiempo_cadical>\t<tiempo_lingeling>\t<tiempo_kissat>\t<tiempo_rsat>\t<tiempo_total>
     with open("times.txt", "a") as file:
-        file.write(f"{sys.argv[1]}\t{time_taken_1}\t{time_taken_2} {'SAT' if glucose_sat else 'UNSAT'}\t{kissat_time_taken} {'SAT' if kissat_sat else 'UNSAT'}\t{rsat_time_taken} {'SAT' if rsat_sat else 'UNSAT'}\t{total_time_taken}\n")
+        file.write(f"{sys.argv[1]}\t{time_taken_1}\t{time_taken_2} {'SAT' if glucose_sat else 'UNSAT'}\t{cadical_time} {'SAT' if cadical_sat else 'UNSAT'}\t{lingeling_time} {'SAT' if lingeling_sat else 'UNSAT'}\t{kissat_time_taken} {'SAT' if kissat_sat else 'UNSAT'}\t{rsat_time_taken} {'SAT' if rsat_sat else 'UNSAT'}\t{total_time_taken}\n")
 
     return
 

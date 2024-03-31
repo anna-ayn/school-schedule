@@ -42,7 +42,8 @@ done
 FILE_TIME="times.txt"
 # Verificamos si el archivo de tiempos no existe, si no existe, lo creamos.
 if [ ! -f $FILE_TIME ]; then
-    echo -e "Archivo\t Convertir a DIMCAS\tResolver Glucose\tResolver Kissat\tResolver RSat\tTiempo Total" > $FILE_TIME
+    # <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_glucose>\t<tiempo_cadical>\t<tiempo_lingeling>\t<tiempo_kissat>\t<tiempo_rsat>\t<tiempo_total>
+    echo -e "Archivo\t Convertir a DIMCAS\tResolver Glucose\tResolver CaDiCaL\tResolver Lingeling\tResolver Kissat\tResolver RSat\tTiempo Total" > $FILE_TIME
 fi
 
 echo -e "\033[93;1mCompilando Kissat...\033[0m"
