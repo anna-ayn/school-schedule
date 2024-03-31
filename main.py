@@ -168,28 +168,28 @@ def main():
     cadical_sat: bool = False
     solver2: Cadical = Cadical()
     if solved and solver2.solve():
-        model = solver2.model()
-        solved = any(x >= 0 for x in model) and len(model) > 0
-        if solved:
+        model2 = solver2.model()
+        solved2 = any(x >= 0 for x in model2) and len(model2) > 0
+        if solved2:
             print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente con Cadical 1.0.3!{Colors.END}")
             cadical_sat = True
     else:
-        solved = False
+        solved2 = False
     time_end = datetime.now()
     time_taken_2: str = str(time_end - time_start)
     print(f"\n⌛ Tiempo que tomo en resolver el problema con Cadical 1.0.3: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
 
     # Resolver el problema con Lingeling 2018
     lingeling_sat: bool = False 
-    solver: Lingeling18 = Lingeling18()
-    if solved and solver.solve():
-        model = solver.model()
-        solved = any(x >= 0 for x in model) and len(model) > 0
-        if solved:
+    solver3: Lingeling18 = Lingeling18()
+    if solved and solver3.solve():
+        model3 = solver3.model()
+        solved3 = any(x >= 0 for x in model3) and len(model3) > 0
+        if solved3:
             print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente con Lingeling 2018!{Colors.END}")
             cadical_sat = True
     else:
-        solved = False
+        solved3 = False
     time_end = datetime.now()
     time_taken_2: str = str(time_end - time_start)
     print(f"\n⌛ Tiempo que tomo en resolver el problema con Lingeling 2018: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
