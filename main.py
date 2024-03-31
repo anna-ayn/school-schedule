@@ -174,6 +174,27 @@ def main():
         create_pdf(interpretation, disp_teachers, list(subjects), classrooms, n_hours, start_time, pdf_name)
         print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
         print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
+
+    kissat_path: str = "./kissat/build/kissat"
+    kissat_time_start: datetime = datetime.now()
+    kissat_sat: bool = False
+    if solved and os.path.exists(kissat_path):
+        # Ejecutar el comando `kissat_path cnf_file` y guardar la salida estandar como un string
+        output: str = os.popen(f"{kissat_path} {cnf_file}").read()
+        if "s SATISFIABLE" in output:
+            kissat_sat = True
+            print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente con Kissat!{Colors.END}")
+        else:
+            print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución con Kissat.")
+    elif not os.path.exists(kissat_path):
+        print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar el ejecutable de Kissat en la ruta {kissat_path}.")
+    kissat_time_end: datetime = datetime.now()
+    kissat_time_taken: str = str(kissat_time_end - kissat_time_start)
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Kissat: {Colors.OKBLUE}{kissat_time_taken}{Colors.END}")
+        
+
+
+
     if cnf_file is not None:
         # Eliminar el archivo de restricciones en formato DIMACS
         os.remove(cnf_file)
