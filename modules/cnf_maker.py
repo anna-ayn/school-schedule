@@ -50,28 +50,47 @@ def c0(problem, A: List[List[List[List[List[str]]]]], disp_teachers, n_teachers:
 # restriccion 1 a CNF
 # Cada materia se imparte dos veces por semana en el mismo salón designado
 def c1(problem, A: List[List[List[List[List[str]]]]], disp_teachers, n_teachers: int, n_subjects: int, n_classrooms: int, n_hours:int) -> None:
+    # existe al menos un dia en que imparte la materia 
     for p in range(n_teachers):
         for m in range(n_subjects):
             if m not in disp_teachers[p]["materias"]:
                 continue
             Ors = []
             for a in range(n_classrooms):
+                for i, d in enumerate(["lunes", "martes", "miercoles", "jueves", "viernes"]):
+                    if d not in disp_teachers[p]["disponibilidad"].keys():
+                        continue
+                    for h in range(n_hours):
+                        if h not in disp_teachers[p]["disponibilidad"][d] or h==disp_teachers[p]["disponibilidad"][d][-1]:
+                            continue
+                        expr = Bool(A[p][m][a][i][h])
+                        Ors.append(expr)
+            if len(Ors) > 0:
+                problem.add_constr(Or(Ors))
+    
+    # existe otro dia que imparte la materia en el mismo salon
+    for p in range(n_teachers):
+        for m in range(n_subjects):
+            if m not in disp_teachers[p]["materias"]:
+                continue
+            for a in range(n_classrooms):
                 for i1, d1 in enumerate(["lunes", "martes", "miercoles", "jueves", "viernes"]):
-                    if d1 not in disp_teachers[p]["disponibilidad"].keys() or d1 == "viernes":
+                    if d1 not in disp_teachers[p]["disponibilidad"].keys():
                         continue
                     for h1 in range(n_hours):
                         if h1 not in disp_teachers[p]["disponibilidad"][d1] or h1==disp_teachers[p]["disponibilidad"][d1][-1]:
                             continue
+                        Ors = []
+                        Ors.append(Not(Bool(A[p][m][a][i1][h1])))
                         for i2, d2 in enumerate(["lunes", "martes", "miercoles", "jueves", "viernes"]):
-                            if d2 not in disp_teachers[p]["disponibilidad"].keys() or d2 <= d1:
+                            if d2 not in disp_teachers[p]["disponibilidad"].keys() or d2 == d1:
                                 continue
                             for h2 in range(n_hours):
                                 if h2 not in disp_teachers[p]["disponibilidad"][d2] or h2==disp_teachers[p]["disponibilidad"][d2][-1]:
                                     continue
-                                expr = Bool(A[p][m][a][i1][h1]) & Bool(A[p][m][a][i2][h2])
-                                Ors.append(expr)
-            if len(Ors) > 0:
-                problem.add_constr(Or(Ors))
+                                Ors.append(Bool(A[p][m][a][i2][h2]))
+                        if len(Ors) > 0:
+                            problem.add_constr(Or(Ors))
                                  
 
 # restriccion 2 a CNF
@@ -164,7 +183,6 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
     # esperar a que los hilos terminen
     for thread in threads:
         thread.join()
-
 
     # convertir el problema a formato DIMACS CNF
     cnf = problem.to_cnf_dimacs()
