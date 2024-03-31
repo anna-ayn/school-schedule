@@ -164,6 +164,7 @@ def main():
     time_taken_2: str = str(time_end - time_start)
     print(f"\n⌛ Tiempo que tomo en resolver el problema con Glucose: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
 
+    # Resolver el problema con Kissat
     kissat_path: str = "./kissat-rel-3.1.1/build/kissat"
     kissat_time_start: datetime = datetime.now()
     kissat_sat: bool = False
@@ -179,7 +180,25 @@ def main():
         print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar el ejecutable de Kissat en la ruta {kissat_path}.")
     kissat_time_end: datetime = datetime.now()
     kissat_time_taken: str = str(kissat_time_end - kissat_time_start)
-    print(f"\n⌛ Tiempo que tomo en resolver el problema con Kissat: {Colors.OKBLUE}{kissat_time_taken}{Colors.END}\n")
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Kissat: {Colors.OKBLUE}{kissat_time_taken}{Colors.END}")
+
+    # Resolver el problema con Rsat
+    rsat_path: str = "./rsat/rsat.sh"
+    rsat_time_start: datetime = datetime.now()
+    rsat_sat: bool = False
+    if solved and os.path.exists(rsat_path):
+        # Ejecutar el comando `rsat_path cnf_file` y guardar la salida estandar como un string
+        output: str = os.popen(f"{rsat_path} {cnf_file}").read()
+        if "s SATISFIABLE" in output:
+            rsat_sat = True
+            print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente con Rsat!{Colors.END}")
+        else:
+            print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución con Rsat.")
+    elif not os.path.exists(rsat_path):
+        print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar el ejecutable de Rsat en la ruta {rsat_path}.")
+    rsat_time_end: datetime = datetime.now()
+    rsat_time_taken: str = str(rsat_time_end - rsat_time_start)
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Rsat: {Colors.OKBLUE}{rsat_time_taken}{Colors.END}\n")
 
     if not solved:
         print(f"{Colors.FAIL}ERROR:{Colors.END} No se pudo encontrar una solución.")
@@ -194,9 +213,9 @@ def main():
         print(f"📄 Archivo PDF creado {Colors.OKGREEN}exitosamente!{Colors.END}")
         print(f"Archivo PDF: {Colors.UNDERLINE_GREEN}{pdf_name}{Colors.END}")
 
-    if cnf_file is not None:
-        # Eliminar el archivo de restricciones en formato DIMACS
-        os.remove(cnf_file)
+    # if cnf_file is not None:
+    #     # Eliminar el archivo de restricciones en formato DIMACS
+    #     os.remove(cnf_file)
 
     total_time_end: datetime = datetime.now()
     total_time_taken: str = str(total_time_end - total_time_start)
@@ -204,9 +223,9 @@ def main():
     print(f"\n👋 {Colors.HEADER}¡Gracias por usar el Planificador de Horarios de Asignaturas!{Colors.END}\n")
 
     # Guardamos los tiempos en el archivo times.txt
-    # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_glucose>\t<tiempo_kissat>\t<tiempo_total>
+    # El formato es: <archivo_json>\t<tiempo_convertir_restricciones>\t<tiempo_glucose>\t<tiempo_kissat>\t<tiempo_rsat>\t<tiempo_total>
     with open("times.txt", "a") as file:
-        file.write(f"{sys.argv[1]}\t{time_taken_1}\t{time_taken_2} {'SAT' if glucose_sat else 'UNSAT'}\t{kissat_time_taken} {'SAT' if kissat_sat else 'UNSAT'}\t{total_time_taken}\n")
+        file.write(f"{sys.argv[1]}\t{time_taken_1}\t{time_taken_2} {'SAT' if glucose_sat else 'UNSAT'}\t{kissat_time_taken} {'SAT' if kissat_sat else 'UNSAT'}\t{rsat_time_taken} {'SAT' if rsat_sat else 'UNSAT'}\t{total_time_taken}\n")
 
     return
 

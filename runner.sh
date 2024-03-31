@@ -42,7 +42,7 @@ done
 FILE_TIME="times.txt"
 # Verificamos si el archivo de tiempos no existe, si no existe, lo creamos.
 if [ ! -f $FILE_TIME ]; then
-    echo -e "Archivo\t Convertir a DIMCAS\t Resolver Glucose\tResolver Kissat\tTiempo Total" > $FILE_TIME
+    echo -e "Archivo\t Convertir a DIMCAS\tResolver Glucose\tResolver Kissat\tResolver RSat\tTiempo Total" > $FILE_TIME
 fi
 
 echo -e "\033[93;1mCompilando Kissat...\033[0m"
@@ -66,7 +66,12 @@ if [ ! -d "kissat-rel-3.1.1/build" ]; then
     make > /dev/null 2>&1
     cd ..
 fi
-echo -e "\033[93;1mKissat compilado.\033[0m"
+
+echo -e "\033[93;1mDescomprimiendo RSat...\033[0m"
+# Verificamos si existe la carpeta rsat, si no existe, descomprimimos rsat.tar.gz en una carpeta rsat.
+if [ ! -d "rsat" ]; then
+    tar -xzf rsat.tar.gz
+fi
 
 # Verificamos si las librerias de requirements.txt estan instaladas
 printf "\033[93;1mVerificando librerías...\033[0m\n"
