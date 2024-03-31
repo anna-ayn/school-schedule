@@ -4,7 +4,7 @@ import sys
 import os
 from typing import List
 from datetime import datetime
-from optilog.solvers.sat import Glucose41
+from optilog.solvers.sat import *
 from modules.cnf_maker import *
 from modules.time_converter import *
 from modules.tables_out import *
@@ -163,6 +163,38 @@ def main():
     time_end = datetime.now()
     time_taken_2: str = str(time_end - time_start)
     print(f"\n⌛ Tiempo que tomo en resolver el problema con Glucose: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
+
+    # Resolver el problema con Cadical 1.0.3
+    cadical_sat: bool = False
+    solver2: Cadical = Cadical()
+    if solved and solver2.solve():
+        model = solver2.model()
+        solved = any(x >= 0 for x in model) and len(model) > 0
+        if solved:
+            print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente con Cadical 1.0.3!{Colors.END}")
+            cadical_sat = True
+    else:
+        solved = False
+    time_end = datetime.now()
+    time_taken_2: str = str(time_end - time_start)
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Cadical 1.0.3: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
+
+    # Resolver el problema con Lingeling 2018
+    lingeling_sat: bool = False 
+    solver: Lingeling18 = Lingeling18()
+    if solved and solver.solve():
+        model = solver.model()
+        solved = any(x >= 0 for x in model) and len(model) > 0
+        if solved:
+            print(f"\n{Colors.OKGREEN}¡Problema resuelto exitosamente con Lingeling 2018!{Colors.END}")
+            cadical_sat = True
+    else:
+        solved = False
+    time_end = datetime.now()
+    time_taken_2: str = str(time_end - time_start)
+    print(f"\n⌛ Tiempo que tomo en resolver el problema con Lingeling 2018: {Colors.OKBLUE}{time_taken_2}{Colors.END}")
+
+    
 
     # Resolver el problema con Kissat
     kissat_path: str = "./kissat-rel-3.1.1/build/kissat"

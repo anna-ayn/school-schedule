@@ -172,20 +172,4 @@ def todimacs(start_time: str, end_time: str, p: int, subjects: int, classrooms: 
         with redirect_stdout(f):
             print(cnf)
 
-    s = Glucose41()
-    s.add_clauses(cnf.clauses)
-    s.solve()
-    interpretation = cnf.decode_dimacs(s.model())
-    if len(interpretation) > 0:
-        model = []
-
-        for e in interpretation:
-            model.append(str(e))
-        
-        i = 0
-        for e in model:
-            if e[0] == "~":
-                i = i + 1
-    else:
-        print("No model found")
     return (outputCointraints, cnf)
