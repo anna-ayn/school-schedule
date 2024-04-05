@@ -3,7 +3,7 @@
     "profesores": [
       {
         "nombre": "Ana",
-        "materias": ["Biología", "Química"],
+        "materias": ["Biología", "Química", "Música"],
         "disponibilidad": {
           "lunes": ["08:00:00.000", "14:00:00.000"],
           "miercoles": ["10:00:00.000", "16:00:00.000"]
@@ -11,7 +11,7 @@
       },
       {
         "nombre": "Carlos",
-        "materias": ["Matemáticas", "Física"],
+        "materias": ["Matemáticas", "Física", "Computación"],
         "disponibilidad": {
           "martes": ["08:00:00.000", "14:00:00.000"],
           "jueves": ["08:00:00.000", "14:00:00.000"]
@@ -42,7 +42,7 @@
         }
       }
     ],
-    "aulas": ["Salón 101", "Salón 102", "Salón 103"],
+    "aulas": ["Salón 101", "Salón 102"],
     "hora_inicio": "08:00:00.000",
     "hora_final": "18:00:00.000"
   }
